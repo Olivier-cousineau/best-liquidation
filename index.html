@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EconoDeal - FR/EN</title>
+<style>
+body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f4f4f4;}
+header { background: #4CAF50; color: #fff; padding: 10px; text-align: center;}
+.container { padding: 20px;}
+.card { background: #fff; border-radius: 5px; padding: 15px; margin: 10px; display: inline-block; width: 200px; vertical-align: top;}
+.card img { max-width: 100%; border-radius: 5px;}
+.lang-btn { position: absolute; right: 20px; top: 15px; }
+</style>
+</head>
+<body>
+<header>
+    <img src="public/logo.svg" alt="EconoDeal" height="40"/>
+    <button class="lang-btn" onclick="toggleLang()">FR/EN</button>
+    <h1 id="title">Bienvenue sur EconoDeal</h1>
+</header>
+<div class="container" id="products"></div>
+<script>
+let lang = 'fr';
+function toggleLang(){
+    lang = lang === 'fr' ? 'en' : 'fr';
+    document.getElementById('title').innerText = lang === 'fr' ? 'Bienvenue sur EconoDeal' : 'Welcome to EconoDeal';
+    loadDeals();
+}
+function loadDeals(){
+    fetch('/api/deals')
+    .then(res => res.json())
+    .then(data => {
+        const container = document.getElementById('products');
+        container.innerHTML = '';
+        data.forEach(d => {
+            const div = document.createElement('div');
+            div.className = 'card';
+            div.innerHTML = `<img src="${d.image}" alt="${d.name}">
+                             <h4>${lang === 'fr' ? d.name_fr : d.name_en}</h4>
+                             <p>${lang === 'fr' ? 'Prix :' : 'Price:'} ${d.price}$</p>`;
+            container.appendChild(div);
+        });
+    });
+}
+loadDeals();
+</script>
+</body>
+</html>
